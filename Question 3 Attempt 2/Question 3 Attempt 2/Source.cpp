@@ -1,175 +1,69 @@
+#include "grid.h"
 #include<iostream>
 
 using namespace std;
 
 int main()
 {
-	const int NUM_ROWS = 3;
-	const int NUM_COLUMNS = 3;
-	int u_row, u_column;
-
-	char tictactoe_game[NUM_ROWS][NUM_COLUMNS];
-	char playerCharacter = 'O';
-
-	int winCount = 0;
-	bool winCheck = false;
+	grid grd;
+	
+	int winCount = 0, response;
+	bool winCheck = false, AI = false;
 
 	//end of declarations
 
-	for (int row = 0; row < 3; row++)
+	cout << "2 player (1) or AI (0)?" << endl;
+	cin >> response;
+	if (response == 0)
 	{
-		for (int column = 0; column < 3; column++)
-		{
-			tictactoe_game[row][column] = '?';
-		}
+		AI = true;
+	}
+	else
+	{
+		AI = false;
 	}
 
 	cout << "Welcome to Tic Tac Toe, Player X starts the game..." << endl;
 
-	for (int row = 0; row < 3; row++)
-	{
-		for (int column = 0; column < 3; column++)
-		{
-			cout << tictactoe_game[row][column];
-			if (column == 2)
-			{
-				cout << endl;
-			}
-		}
-	}
-
-	/*tictactoe_game[0][0] = 'X';
-	tictactoe_game[1][1] = 'X';
-	tictactoe_game[2][2] = 'X';*/
+	grd.printGrid();
 
 	//Start of gameloop
 
-	for (int turnCount = 0; turnCount < 9;turnCount++)
+	for (int turnCount = 0; turnCount < 9; turnCount++)
 	{
-		if (playerCharacter == 'X')
-		{
-			playerCharacter = 'O';
-		}
-		else
-		{
-			playerCharacter = 'X';
-		}
-		//gets location user wants to place character in.
-		cout << "Enter the row for " << playerCharacter << ". (0 to 2)" << endl;
-		cin >> u_row;
-		cout << endl << "Enter the column. (0 to 2)" << endl;
-		cin >> u_column;
-		cout << endl;
-		system("cls");
-		//sets chosen location to player character.
-
-		tictactoe_game[u_row][u_column] = playerCharacter;
-
-		//prints game grid
-		for (int row = 0; row < 3; row++)
-		{
-			for (int column = 0; column < 3; column++)
-			{
-				cout << tictactoe_game[row][column] << " ";
-				if (column == 2)
-				{
-					cout << endl;
-				}
-			}
-		}
-
+		grd.userTurn(turnCount, AI);
+		grd.printGrid();
 
 		//detects for horizontal win.
-
-		for (int row = 0; row < NUM_ROWS; row++)
+		for (int row = 0; row < 3; row++)
 		{
-			winCount = 0;
-			for (int column = 0; column < NUM_COLUMNS; column++)
-			{
-				if (tictactoe_game[row][column] == playerCharacter)
-				{
-					// the character at this location
-					// in the grid matches our players
-					// character
-					// add one to our win counter
-
-					winCount++;
-				}
-			}
-
-			if (winCount == NUM_COLUMNS)
+			if (grd.horCheck(row, grd.playerCharacter) == 3)
 			{
 				winCheck = true;
-				break;
-			}
-			else
-			{
-				winCheck = false;
-
 			}
 		}
 
 		//detects for vertical win
 		if (winCheck == false)
 		{
-			for (int column = 0; column < NUM_COLUMNS; column++)
+			for (int column = 0; column < 3; column++)
 			{
-				winCount = 0;
-				for (int row = 0; row < NUM_ROWS; row++)
-				{
-					if (tictactoe_game[row][column] == playerCharacter)
-					{
-						// the character at this location
-						// in the grid matches our players
-						// character
-						// add one to our win counter
-
-						winCount++;
-					}
-				}
-
-				if (winCount == NUM_COLUMNS)
+				if (grd.verCheck(column, grd.playerCharacter) == 3)
 				{
 					winCheck = true;
-					break;
 				}
-				else
-				{
-					winCheck = false;
-
-				}
-
-
 			}
 
 			//detects for diagonal win
 			if (winCheck == false)
 			{
-				winCount = 0;
-
-				if ((tictactoe_game[0][0] == playerCharacter) && (tictactoe_game[1][1] == playerCharacter) && (tictactoe_game[2][2] == playerCharacter))
+				if (grd.diaCheck(0, grd.playerCharacter) == 3)
 				{
 					winCheck = true;
 				}
-				else
+				else if (grd.diaCheck(1, grd.playerCharacter) == 3)
 				{
-					winCheck = false;
-
-				}
-
-				if (winCheck == false)
-				{
-					winCount = 0;
-
-					if ((tictactoe_game[0][2] == playerCharacter) && (tictactoe_game[1][1] == playerCharacter) && (tictactoe_game[2][0] == playerCharacter))
-					{
-						winCheck = true;
-					}
-					else
-					{
-						winCheck = false;
-
-					}
+					winCheck = true;
 				}
 			}
 		}
@@ -182,7 +76,7 @@ int main()
 
 	if (winCheck == true)
 	{
-		cout << playerCharacter << " win the game!" << endl;
+		cout << grd.playerCharacter << " win the game!" << endl;
 	}
 	else
 	{
